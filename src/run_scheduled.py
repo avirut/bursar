@@ -19,6 +19,7 @@ schedule.every(1).hour.do(
     run_update, days_to_fetch=int(os.environ.get("HOURLY_PULL_PAST_DAYS"))
 )
 
+print("Entering scheduled update loop.")
 while True:
     schedule.run_pending()
     time.sleep(10)

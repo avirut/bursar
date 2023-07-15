@@ -148,6 +148,7 @@ def run_update(days_to_fetch):
 
         update_worksheet(ws, subset, columns)
 
+    print(f"Completed {days_to_fetch} day update at {datetime.datetime.now()}.")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
