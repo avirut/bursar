@@ -8,6 +8,6 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml environment.yml
 RUN micromamba install -y -n base -f environment.yml && \
     micromamba clean --all --yes
 
-COPY src src
+COPY --chown=$MAMBA_USER:$MAMBA_USER src src
 
 ENTRYPOINT [ "/usr/local/bin/_entrypoint.sh", "/app/src/entrypoint.sh" ]
