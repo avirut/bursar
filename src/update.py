@@ -8,7 +8,8 @@ import gspread
 import pandas as pd
 import requests
 
-env = dotenv.dotenv_values()
+if not os.environ.get("IS_DOCKER", False):
+    dotenv.load_dotenv()
 
 
 def get_maps(maps_sheet):
@@ -95,16 +96,20 @@ def update_worksheet(ws: gspread.Worksheet, subset, columns):
 
 def run_update(days_to_fetch):
     # load credentials
-    gs_auth = json.load(open(os.path.join(env["CONFIG_PATH"], "google_auth.json")))
-    sf_auth = json.load(open(os.path.join(env["CONFIG_PATH"], "simplefin_auth.json")))
+    gs_auth = json.load(
+        open(os.path.join(os.environ.get("CONFIG_PATH"), "google_auth.json"))
+    )
+    sf_auth = json.load(
+        open(os.path.join(os.environ.get("CONFIG_PATH"), "simplefin_auth.json"))
+    )
 
     gs = gspread.service_account_from_dict(gs_auth)
-    sh = gs.open_by_key(env["SHEET_ID"])
+    sh = gs.open_by_key(os.environ.get("SHEET_ID"))
 
     # load sheets
     try:
-        template_sheet = sh.get_worksheet_by_id(int(env["TEMPLATE_GID"]))
-        maps_sheet = sh.get_worksheet_by_id(int(env["MAPS_GID"]))
+        template_sheet = sh.get_worksheet_by_id(int(os.environ.get("TEMPLATE_GID")))
+        maps_sheet = sh.get_worksheet_by_id(int(os.environ.get("MAPS_GID")))
     except Exception as e:
         print("Template or maps sheet GID not found. Exiting update.py.")
         exit()
@@ -126,7 +131,7 @@ def run_update(days_to_fetch):
     df = simplefin_to_dataframe(data, maps)
 
     # get columns to update
-    columns = [c.strip() for c in env["TEMPLATE_COLUMNS"].split(",")]
+    columns = [c.strip() for c in os.environ.get("TEMPLATE_COLUMNS").split(",")]
 
     # update affected sheets
     worksheets = {s.title: s.id for s in sh.worksheets()}

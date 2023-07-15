@@ -3,10 +3,10 @@ version: "3"
 
 services:
   bursar:
-    image: ghcr.io/avirut/bursar:latest
+    image: e68961d452a7
     container_name: bursar
     restart: unless-stopped
     env_file:
       - .env
     volumes:
-      - ./config:/opt/bursar/config
+      - ./config:/etc/bursar/config

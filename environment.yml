@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - gspread
-  - pandas
+  - gspread=5.7.1
+  - pandas=2.0.3
   - python-dotenv
   - schedule
