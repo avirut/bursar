@@ -1,7 +1,9 @@
 import base64
 import json
 import os
+import platform
 
+import crontab
 import dotenv
 import gspread
 import requests
@@ -60,5 +62,30 @@ except Exception as e:
     exit()
 
 print("Google Sheets config validated.")
+
+###
+# setup cron
+###
+print("Setting up crontab...")
+
+# if on windows, can't use crontab
+if platform.system() == "Windows":
+    print("Crontab not supported on Windows, skipping to initial data pull.")
+else:
+    with crontab.CronTab(user=True) as cron:
+        weekly = cron.new(command=f"python update.py {env['WEEKLY_PULL_PAST_DAYS']}")
+        weekly.dow.on("MON")
+
+        nightly = cron.new(command=f"python update.py {env['NIGHTLY_PULL_PAST_DAYS']}")
+        nightly.day.every(1)
+
+        hourly = cron.new(command=f"python update.py {env['HOURLY_PULL_PAST_DAYS']}")
+        hourly.hour.every(1)
+
+###
+# initial pull
+###
+print("Performing initial data pull...")
+os.system(f"python update.py {env['SETUP_PULL_PAST_DAYS']}")
 
 print("Setup complete!")
