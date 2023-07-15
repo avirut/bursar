@@ -74,7 +74,6 @@ dependencies:
   - pyopenssl=23.2.0=pyhd8ed1ab_1
   - pysocks=1.7.1=pyh0701188_6
   - python=3.10.12=h4de0772_0_cpython
-  - python-crontab=3.0.0=pyhd8ed1ab_0
   - python-dateutil=2.8.2=pyhd8ed1ab_0
   - python-dotenv=1.0.0=pyhd8ed1ab_0
   - python-tzdata=2023.3=pyhd8ed1ab_0
@@ -86,6 +85,7 @@ dependencies:
   - requests=2.31.0=pyhd8ed1ab_0
   - requests-oauthlib=1.3.1=pyhd8ed1ab_0
   - rsa=4.9=pyhd8ed1ab_0
+  - schedule=1.2.0=pyhd8ed1ab_0
   - setuptools=68.0.0=pyhd8ed1ab_0
   - six=1.16.0=pyh6c4a22f_0
   - stack_data=0.6.2=pyhd8ed1ab_0

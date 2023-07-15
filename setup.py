@@ -1,12 +1,14 @@
 import base64
 import json
 import os
-import platform
+import time
 
-import crontab
 import dotenv
 import gspread
 import requests
+import schedule
+
+from update import run_update
 
 env = dotenv.dotenv_values()
 
@@ -64,28 +66,20 @@ except Exception as e:
 print("Google Sheets config validated.")
 
 ###
-# setup cron
-###
-print("Setting up crontab...")
-
-# if on windows, can't use crontab
-if platform.system() == "Windows":
-    print("Crontab not supported on Windows, skipping to initial data pull.")
-else:
-    with crontab.CronTab(user=True) as cron:
-        weekly = cron.new(command=f"python update.py {env['WEEKLY_PULL_PAST_DAYS']}")
-        weekly.dow.on("MON")
-
-        nightly = cron.new(command=f"python update.py {env['NIGHTLY_PULL_PAST_DAYS']}")
-        nightly.day.every(1)
-
-        hourly = cron.new(command=f"python update.py {env['HOURLY_PULL_PAST_DAYS']}")
-        hourly.hour.every(1)
-
-###
 # initial pull
 ###
 print("Performing initial data pull...")
-os.system(f"python update.py {env['SETUP_PULL_PAST_DAYS']}")
+run_update(days_to_fetch=env["SETUP_PULL_PAST_DAYS"])
 
 print("Setup complete!")
+
+###
+# run loop
+###
+schedule.every(1).week.do(run_update, days_to_fetch=env["WEEKLY_PULL_PAST_DAYS"])
+schedule.every(1).day.do(run_update, days_to_fetch=env["DAILY_PULL_PAST_DAYS"])
+schedule.every(1).hour.do(run_update, days_to_fetch=env["HOURLY_PULL_PAST_DAYS"])
+
+while True:
+    schedule.run_pending()
+    time.sleep(10)

@@ -84,11 +84,7 @@ def update_worksheet(ws: gspread.Worksheet, subset, columns):
         pd.concat([ws_data, sf_data])
         .loc[:, columns]
         .drop_duplicates(subset=["id"], keep="first")
-        .assign(
-                posted=lambda x: pd.to_datetime(x["posted"]).dt.strftime(
-                    "%m/%d/%Y"
-                )
-            )
+        .assign(posted=lambda x: pd.to_datetime(x["posted"]).dt.strftime("%m/%d/%Y"))
         .sort_values(by=["posted", "account"], ascending=[False, True])
         .fillna("")
         .values.tolist()
@@ -97,7 +93,7 @@ def update_worksheet(ws: gspread.Worksheet, subset, columns):
     ws.update(f"A2:{last_col}", new_data, value_input_option="USER_ENTERED")
 
 
-if __name__ == "__main__":
+def run_update(days_to_fetch):
     # load credentials
     gs_auth = json.load(open(os.path.join(env["CONFIG_PATH"], "google_auth.json")))
     sf_auth = json.load(open(os.path.join(env["CONFIG_PATH"], "simplefin_auth.json")))
@@ -115,12 +111,7 @@ if __name__ == "__main__":
 
     # fetch data from SimpleFIN
     end = datetime.datetime.now()
-    if len(sys.argv) > 1:
-        days = int(sys.argv[1])
-    else:
-        days = 1
-    start = end - datetime.timedelta(days=days)
-
+    start = end - datetime.timedelta(days=days_to_fetch)
     mparams = {
         "start-date": str(int(start.timestamp())),
         "end-date": str(int(end.timestamp())),
@@ -151,3 +142,11 @@ if __name__ == "__main__":
             worksheets[period] = ws.id
 
         update_worksheet(ws, subset, columns)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        days = int(sys.argv[1])
+    else:
+        days = 1
+    run_update(days)
