@@ -10,4 +10,4 @@ RUN micromamba install -y -n base -f environment.yml && \
 
 COPY src src
 
-# ENTRYPOINT [ "python src/setup.py && python src/run_scheduled.py" ]
+ENTRYPOINT [ "/usr/local/bin/_entrypoint.sh", "/app/src/entrypoint.sh" ]
