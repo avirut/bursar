@@ -78,7 +78,7 @@ def simplefin_to_dataframe(simplefin_data, maps):
 
 def update_worksheet(ws: gspread.Worksheet, subset, columns):
     last_col = chr(ord("A") + len(columns) - 1)
-    ws_data = pd.DataFrame(ws.get_values(f"A2:{last_col}"), columns=columns)
+    ws_data = pd.DataFrame(ws.get_values(f"A1:{last_col}"), columns=columns).iloc[1:, :]
     sf_data = subset.copy()
 
     new_data = (
