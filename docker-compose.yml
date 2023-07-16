@@ -3,7 +3,7 @@ version: "3"
 
 services:
   bursar:
-    image: ghcr.io/avirut/bursar:master
+    image: ghcr.io/avirut/bursar:latest
     container_name: bursar
     restart: unless-stopped
     env_file:
