@@ -6,6 +6,7 @@ import dotenv
 import gspread
 import requests
 
+from run_scheduled import run_scheduled
 from update import run_update
 
 if not os.environ.get("IS_DOCKER", False):
@@ -88,3 +89,7 @@ print("Performing initial data pull...")
 run_update(days_to_fetch=int(os.environ.get("SETUP_PULL_PAST_DAYS")))
 
 print("Setup complete!")
+
+if os.environ.get("IS_DOCKER", False):
+    print("Initializing scheduled updates...")
+    run_scheduled()
