@@ -130,6 +130,12 @@ def run_update(days_to_fetch):
     maps = get_maps(maps_sheet)
     df = simplefin_to_dataframe(data, maps)
 
+    if len(df) == 0:
+        print(
+            f"No transactions found for {days_to_fetch} day update at {datetime.datetime.now()}."
+        )
+        exit()
+
     # get columns to update
     columns = [c.strip() for c in os.environ.get("TEMPLATE_COLUMNS").split(",")]
 
